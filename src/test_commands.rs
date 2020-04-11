@@ -25,7 +25,7 @@ mod tests {
         let state = memory::setup_memory();
         let state_1 = memory::write_to_register(state, rs, rs_value);
         let state_2 = memory::write_to_register(state_1, rt, rt_value);
-        let post_add = commands::exec(state_2, "add $t0, $t1, $t2");
+        let post_add = commands::exec(state_2, "add $t2, $t0, $t1");
 
         assert_eq!(post_add.get_register(rd), rs_value + rt_value);
     }

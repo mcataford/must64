@@ -1,7 +1,8 @@
 mod utils;
 mod commands;
 mod memory;
-mod constants;
+
+mod test_commands;
 
 fn main() {
     let source_path = "./test.s";

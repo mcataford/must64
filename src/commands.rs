@@ -22,6 +22,11 @@ fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::Sta
     match &fragment["op"] {
         "add" => add(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
         "addi" => add_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
+        "and" => and(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
+        "andi" => and_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
+        "or" => or(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
+        "ori" => or_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
+        "nor" => nor(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
         "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
         "sub" => subtract(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
         _ => catchall(state),
@@ -42,6 +47,39 @@ fn add(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
 fn add_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
     let rs_value = state.get_register(rs);
     let resulting_value = rs_value + parse_immediate(imm);
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
+fn and(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let rt_value = state.get_register(rt);
+    let resulting_value = rs_value & rt_value;
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
+fn and_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let resulting_value = rs_value & parse_immediate(imm);
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
+fn or(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let rt_value = state.get_register(rt);
+    let resulting_value = rs_value | rt_value;
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
+fn or_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let resulting_value = rs_value | parse_immediate(imm);
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
+fn nor(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let rt_value = state.get_register(rt);
+    let resulting_value = !(rs_value | rt_value);
     return memory::write_to_register(state, rd, resulting_value);
 }
 

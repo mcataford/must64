@@ -12,7 +12,7 @@ fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::Sta
         "add" => add(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
         "addi" => add_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
         "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
-
+        "sub" => subtract(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
         _ => catchall(state),
     }
 }
@@ -36,6 +36,13 @@ fn add_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory:
 
 fn load_immediate(state: memory::State, rd: &str, imm: &str) -> memory::State {
     return memory::write_to_register(state, rd, parse_immediate(imm));
+}
+
+fn subtract(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let rt_value = state.get_register(rt);
+    let resulting_value = rs_value - rt_value;
+    return memory::write_to_register(state, rd, resulting_value);
 }
 
 fn catchall(state: memory::State) -> memory::State {

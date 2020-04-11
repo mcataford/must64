@@ -1,21 +1,30 @@
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub struct State {
+    program_counter: i32,
     registers: [i32; 32],
 }
 
 impl State {
     pub fn dump(&self) {
-        println!("{:?}", self.registers)
+        println!("PC: 0x{:08X?}", self.program_counter);
+        println!("{:?}", self.registers);
     }
 
     pub fn get_register(&self, register: &str) -> i32 {
         let index = map_register_to_index(register);
         self.registers[index]
     }
+
+    pub fn get_program_counter(&self) -> i32 {
+        return self.program_counter;
+    }
 }
 
 pub fn setup_memory() -> State {
-    return State { registers: [0; 32] };
+    return State {
+        program_counter: 0x00400000,
+        registers: [0; 32],
+    };
 }
 
 pub fn write_to_register(initial_state: State, register: &str, value: i32) -> State {
@@ -24,6 +33,14 @@ pub fn write_to_register(initial_state: State, register: &str, value: i32) -> St
     new_regs[register_index] = value;
     return State {
         registers: new_regs,
+        program_counter: initial_state.program_counter.clone(),
+    };
+}
+
+pub fn set_program_counter(state: State, value: i32) -> State {
+    return State {
+        registers: state.registers.clone(),
+        program_counter: value,
     };
 }
 

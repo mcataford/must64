@@ -4,7 +4,18 @@ use regex;
 
 pub fn exec(state: memory::State, command: &str) -> memory::State {
     let command_fragments = utils::split_fragment(command);
-    return exec_fragment(state, command_fragments);
+    let new_state = exec_fragment(state, command_fragments);
+
+    let initial_counter = state.get_program_counter();
+    let new_counter = state.get_program_counter();
+
+    let has_pc_changed = initial_counter != new_counter;
+
+    if has_pc_changed {
+        return new_state;
+    } else {
+        return memory::set_program_counter(new_state, new_counter + 4);
+    }
 }
 
 fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State {

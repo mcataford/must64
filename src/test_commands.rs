@@ -43,6 +43,34 @@ mod tests {
 
         assert_eq!(post_addi.get_register(rd), imm + rs_value);
     }
+    #[test]
+    fn test_and() {
+        let rd = "$t0";
+        let rs = "$t1";
+        let rt = "$t2";
+        let rs_value = 1000;
+        let rt_value = 100;
+
+        let state = memory::setup_memory();
+        let state_1 = memory::write_to_register(state, rs, rs_value);
+        let state_2 = memory::write_to_register(state_1, rt, rt_value);
+        let post_and = commands::exec(state_2, "and $t0, $t1, $t2");
+
+        assert_eq!(post_and.get_register(rd), rs_value & rt_value);
+    }
+    #[test]
+    fn test_and_immediate() {
+        let rd = "$t0";
+        let rs = "$t1";
+        let imm = 1000;
+        let rs_value = 100;
+
+        let state = memory::setup_memory();
+        let state_1 = memory::write_to_register(state, rs, rs_value);
+        let post_addi = commands::exec(state_1, "andi $t0, $t1, 1000");
+
+        assert_eq!(post_addi.get_register(rd), rs_value & imm);
+    }
 
     #[test]
     fn test_sub() {

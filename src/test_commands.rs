@@ -29,4 +29,18 @@ mod tests {
 
         assert_eq!(post_add.get_register(rd), rs_value + rt_value);
     }
+
+    #[test]
+    fn test_addi() {
+        let rd = "$t0";
+        let rs = "$t1";
+        let imm = 1000;
+        let rs_value = 100;
+
+        let state = memory::setup_memory();
+        let state_1 = memory::write_to_register(state, rs, rs_value);
+        let post_addi = commands::exec(state_1, "addi $t0, $t1, 1000");
+
+        assert_eq!(post_addi.get_register(rd), imm + rs_value);
+    }
 }

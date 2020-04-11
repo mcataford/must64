@@ -9,21 +9,33 @@ pub fn exec(state: memory::State, command: &str) -> memory::State {
 
 fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State {
     match &fragment["op"] {
-        "add" => add(state, &fragment["rs"], &fragment["rt"], &fragment["rd"]),
+        "add" => add(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
+        "addi" => add_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
         "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
+
         _ => catchall(state),
     }
 }
 
-fn add(state: memory::State, rs: &str, rt: &str, rd: &str) -> memory::State {
+fn parse_immediate(imm: &str) -> i32 {
+    return imm.parse().unwrap();
+}
+
+fn add(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
     let rs_value = state.get_register(rs);
     let rt_value = state.get_register(rt);
     let resulting_value = rs_value + rt_value;
     return memory::write_to_register(state, rd, resulting_value);
 }
 
+fn add_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
+    let rs_value = state.get_register(rs);
+    let resulting_value = rs_value + parse_immediate(imm);
+    return memory::write_to_register(state, rd, resulting_value);
+}
+
 fn load_immediate(state: memory::State, rd: &str, imm: &str) -> memory::State {
-    return memory::write_to_register(state, rd, imm.parse().unwrap());
+    return memory::write_to_register(state, rd, parse_immediate(imm));
 }
 
 fn catchall(state: memory::State) -> memory::State {

@@ -20,11 +20,11 @@ The interpreter doesn't support heap allocation yet, and will print the state of
 | | | | |
 |---|---|---|---|
 |✔️ add|✔️ addi|✔️ sub|✔️ li|
-|❌ addiu|❌ addu|❌ and|❌ andi|
+|❌ addiu|❌ addu|✔️  and|✔️  andi|
 |❌ beq|❌ bne|❌ j|❌ jal|
 |❌ jr|❌ lbu|❌ lhu|❌ ll|
-|❌ lui|❌ lw|❌ nor|❌ or|
-|❌ ori|❌ slt|❌ sltu|❌ slti|
+|❌ lui|❌ lw|✔️  nor|✔️  or|
+|✔️ ori|❌ slt|❌ sltu|❌ slti|
 |❌ sltiu|❌ sll|❌ srl|❌ sb|
 |❌ sc|❌ sh|❌ sw|❌ subu|
 

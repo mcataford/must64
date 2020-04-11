@@ -7,13 +7,26 @@ impl State {
     pub fn dump(&self) {
         println!("{:?}", self.registers)    
     }
+
+    pub fn get_register(&self, register: &str) -> i32 {
+        let index = map_register_to_index(register);
+        self.registers[index]
+    }
 }
 
 pub fn setup_memory() -> State {
     return State { registers: [0; 32] }
 }
 
-pub fn map_register_to_index(register: &str) -> usize {
+
+pub fn write_to_register(initial_state: State, register: &str, value: i32) -> State {
+    let register_index = map_register_to_index(register);
+    let mut new_regs = initial_state.registers.clone();
+    new_regs[register_index] = value;
+    return State { registers: new_regs }
+}
+
+fn map_register_to_index(register: &str) -> usize {
     match register {
     "$zero" => 0,
     "$at" => 1,
@@ -51,9 +64,3 @@ pub fn map_register_to_index(register: &str) -> usize {
     }
 }
 
-pub fn write_to_register(initial_state: State, register: &str, value: i32) -> State {
-    let register_index = map_register_to_index(register);
-    let mut new_regs = initial_state.registers.clone();
-    new_regs[register_index] = value;
-    return State { registers: new_regs }
-}

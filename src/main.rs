@@ -1,6 +1,6 @@
-mod utils;
 mod commands;
 mod memory;
+mod utils;
 
 mod test_commands;
 
@@ -12,7 +12,7 @@ fn main() {
         println!("{}", f);
         let new_state = commands::exec(state, &f);
         new_state.dump();
-        
+
         state = new_state
     }
 }

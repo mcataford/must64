@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::memory;
     use crate::commands;
-    
+    use crate::memory;
+
     #[test]
     fn test_load_immediate() {
         let rs = "$t0";

@@ -4,10 +4,10 @@ use regex;
 
 pub fn exec(state: memory::State, command: &str) -> memory::State {
     let command_fragments = utils::split_fragment(command);
-    return exec_fragment(state, command_fragments)
+    return exec_fragment(state, command_fragments);
 }
 
-fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State{
+fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State {
     match &fragment["op"] {
         "add" => add(state, &fragment["rs"], &fragment["rt"], &fragment["rd"]),
         "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
@@ -26,9 +26,7 @@ fn load_immediate(state: memory::State, rd: &str, imm: &str) -> memory::State {
     return memory::write_to_register(state, rd, imm.parse().unwrap());
 }
 
-
 fn catchall(state: memory::State) -> memory::State {
     println!("NOT_IMPLEMENTED");
     return state.clone();
 }
-

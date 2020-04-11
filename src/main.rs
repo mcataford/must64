@@ -2,6 +2,7 @@ use std::env;
 use std::path::Path;
 
 mod commands;
+mod constants;
 mod memory;
 mod utils;
 
@@ -24,6 +25,7 @@ fn main() {
 
     let fragments = utils::read_source(source_path);
     let mut state = memory::setup_memory();
+
     for f in &fragments {
         println!("{}", f);
         let new_state = commands::exec(state, &f);

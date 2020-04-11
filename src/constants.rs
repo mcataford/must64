@@ -1,3 +1,6 @@
+pub const TEXT_START_ADDR: i32 = 0x00400000;
+
+/*
 pub const REGISTER_IDENTIFIERS: [&str; 32] = ["$zero",
     "$at",
     "$v0",
@@ -31,4 +34,4 @@ pub const REGISTER_IDENTIFIERS: [&str; 32] = ["$zero",
     "$fp",
     "$ra",
     ];
-
+*/

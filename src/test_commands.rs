@@ -59,4 +59,15 @@ mod tests {
 
         assert_eq!(post_sub.get_register(rd), rs_value - rt_value);
     }
+
+    #[test]
+    fn test_pc_increments_if_inst_does_not_edit_it() {
+        let state = memory::setup_memory();
+        let new_state = commands::exec(state, "li $t0, 1000");
+
+        let initial_pc = state.get_program_counter();
+        let new_pc = new_state.get_program_counter();
+
+        assert_eq!(initial_pc + 4, new_pc);
+    }
 }

@@ -1,15 +1,16 @@
 use crate::memory;
 use crate::utils;
+use regex;
 
 pub fn exec(state: memory::State, command: &str) -> memory::State {
     let command_fragments = utils::split_fragment(command);
-    return exec_fragment(state, command_fragments)
+    return exec_fragment(state, command_fragments);
 }
 
-fn exec_fragment(state: memory::State, fragment: Vec<&str>) -> memory::State{
-    match fragment[0] {
-        "add" => add(state, fragment[1], fragment[2], fragment[3]),
-        "li" => load_immediate(state, fragment[1], fragment[2]),
+fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State {
+    match &fragment["op"] {
+        "add" => add(state, &fragment["rs"], &fragment["rt"], &fragment["rd"]),
+        "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
         _ => catchall(state),
     }
 }
@@ -29,4 +30,3 @@ fn catchall(state: memory::State) -> memory::State {
     println!("NOT_IMPLEMENTED");
     return state.clone();
 }
-

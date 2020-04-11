@@ -17,6 +17,7 @@ The interpreter doesn't support heap allocation yet, and will print the state of
 
 ### Core IS
 
+| | | | |
 |---|---|---|---|
 |✔️ add|✔️ addi|✔️ sub|✔️ li|
 |❌ addiu|❌ addu|❌ and|❌ andi|

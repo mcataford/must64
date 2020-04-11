@@ -2,6 +2,7 @@ use std::env;
 use std::path::Path;
 
 mod commands;
+mod constants;
 mod memory;
 mod utils;
 

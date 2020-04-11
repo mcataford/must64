@@ -1,3 +1,5 @@
+use crate::constants;
+
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct State {
     program_counter: i32,
@@ -22,7 +24,7 @@ impl State {
 
 pub fn setup_memory() -> State {
     return State {
-        program_counter: 0x00400000,
+        program_counter: constants::TEXT_START_ADDR,
         registers: [0; 32],
     };
 }

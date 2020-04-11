@@ -33,6 +33,17 @@ fn catchall(state: memory::State) -> memory::State {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
+    #[test]
+    fn test_load_immediate() {
+        let rs = "$t0";
+        let rs_value = 1000;
+
+        let state = memory::setup_memory();
+        let post_li = exec(state, "li $t0, 1000");
+
+        assert_eq!(post_li.get_register(rs), rs_value);
+    }
 
     #[test]
     fn test_add() {

@@ -80,6 +80,6 @@ fn map_register_to_index(register: &str) -> usize {
         "$sp" => 29,
         "$fp" => 30,
         "$ra" => 31,
-        &_ => 32,
+        &_ => 0,
     }
 }

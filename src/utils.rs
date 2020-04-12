@@ -18,7 +18,7 @@ pub fn read_source(path: &str) -> Vec<String> {
 
 pub fn split_fragment(fragment: &str) -> regex::Captures {
     let re = Regex::new(
-        r"^(?P<op>\w+) (?:(?P<rd>\$\w+),) (?:(?P<rs>\$\w+),)? ?(?:(?P<rt>\$\w+)|(?P<imm>\d+))$",
+        r"^(?P<op>\w+) (?:(?P<rd>\$\w+),) (?:(?P<rs>\$\w+),)? ?(?:(?P<rt>\$\w+),?)? ?(?P<imm>\d+)?$",
     )
     .expect("Invalid regex");
     return re.captures(fragment).unwrap();

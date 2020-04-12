@@ -1,3 +1,4 @@
+use crate::constants;
 use crate::memory;
 use crate::utils;
 use regex;
@@ -18,18 +19,35 @@ pub fn exec(state: memory::State, command: &str) -> memory::State {
     }
 }
 
-fn exec_fragment(state: memory::State, fragment: regex::Captures) -> memory::State {
-    match &fragment["op"] {
-        "add" => add(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
-        "addi" => add_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
-        "and" => and(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
-        "andi" => and_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
-        "or" => or(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
-        "ori" => or_immediate(state, &fragment["rd"], &fragment["rs"], &fragment["imm"]),
-        "nor" => nor(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
-        "li" => load_immediate(state, &fragment["rd"], &fragment["imm"]),
-        "sub" => subtract(state, &fragment["rd"], &fragment["rs"], &fragment["rt"]),
-        _ => catchall(state),
+fn exec_fragment(state: memory::State, fg: regex::Captures) -> memory::State {
+    let op = &fg["op"];
+    let rd = if fg.get(2) != None {
+        fg.get(2).unwrap().as_str()
+    } else {
+        ""
+    };
+    let rs = if fg.get(3) != None {
+        fg.get(3).unwrap().as_str()
+    } else {
+        ""
+    };
+    let rt = if fg.get(4) != None {
+        fg.get(4).unwrap().as_str()
+    } else {
+        ""
+    };
+    let imm = if fg.get(5) != None {
+        fg.get(5).unwrap().as_str()
+    } else {
+        ""
+    };
+
+    if constants::R_TYPES.contains(&op) {
+        return exec_r_type(state, op, rd, rs, rt);
+    } else if constants::I_TYPES.contains(&op) {
+        return exec_i_type(state, op, rd, rs, imm);
+    } else {
+        return state;
     }
 }
 
@@ -37,64 +55,33 @@ fn parse_immediate(imm: &str) -> i32 {
     return imm.parse().unwrap();
 }
 
-fn add(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
+fn exec_r_type(state: memory::State, op: &str, rd: &str, rs: &str, rt: &str) -> memory::State {
     let rs_value = state.get_register(rs);
     let rt_value = state.get_register(rt);
-    let resulting_value = rs_value + rt_value;
+
+    let resulting_value = match op {
+        "add" => rs_value + rt_value,
+        "and" => rs_value & rt_value,
+        "or" => rs_value | rt_value,
+        "nor" => !(rs_value | rt_value),
+        "sub" => rs_value - rt_value,
+        _ => state.get_register(rd),
+    };
+
     return memory::write_to_register(state, rd, resulting_value);
 }
 
-fn add_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
+fn exec_i_type(state: memory::State, op: &str, rd: &str, rs: &str, imm: &str) -> memory::State {
     let rs_value = state.get_register(rs);
-    let resulting_value = rs_value + parse_immediate(imm);
+    let imm_value = parse_immediate(imm);
+
+    let resulting_value = match op {
+        "addi" => rs_value + imm_value,
+        "andi" => rs_value & imm_value,
+        "ori" => rs_value | imm_value,
+        "li" => imm_value,
+        _ => state.get_register(rd),
+    };
+
     return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn and(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let rt_value = state.get_register(rt);
-    let resulting_value = rs_value & rt_value;
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn and_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let resulting_value = rs_value & parse_immediate(imm);
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn or(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let rt_value = state.get_register(rt);
-    let resulting_value = rs_value | rt_value;
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn or_immediate(state: memory::State, rd: &str, rs: &str, imm: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let resulting_value = rs_value | parse_immediate(imm);
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn nor(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let rt_value = state.get_register(rt);
-    let resulting_value = !(rs_value | rt_value);
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn load_immediate(state: memory::State, rd: &str, imm: &str) -> memory::State {
-    return memory::write_to_register(state, rd, parse_immediate(imm));
-}
-
-fn subtract(state: memory::State, rd: &str, rs: &str, rt: &str) -> memory::State {
-    let rs_value = state.get_register(rs);
-    let rt_value = state.get_register(rt);
-    let resulting_value = rs_value - rt_value;
-    return memory::write_to_register(state, rd, resulting_value);
-}
-
-fn catchall(state: memory::State) -> memory::State {
-    println!("NOT_IMPLEMENTED");
-    return state.clone();
 }

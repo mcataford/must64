@@ -1,5 +1,8 @@
 pub const TEXT_START_ADDR: i32 = 0x00400000;
 
+pub const R_TYPES: [&str; 5] = ["add", "and", "or", "nor", "sub"];
+pub const I_TYPES: [&str; 4] = ["addi", "andi", "ori", "li"];
+
 /*
 pub const REGISTER_IDENTIFIERS: [&str; 32] = ["$zero",
     "$at",
